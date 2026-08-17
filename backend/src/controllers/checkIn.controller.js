@@ -3,7 +3,14 @@ import Ticket from "../models/Ticket.model.js";
 
 export const checkIn = async (req, res, next) => {
   try {
-    const { ticket_id } = req.body;
+    const { ticket_id } = req.body || {};
+
+    if (!ticket_id) {
+      return res.status(400).json({
+        success: false,
+        message: "ticket_id is required",
+      });
+    }
 
     const ticket = await Ticket.findById(ticket_id);
 
@@ -16,7 +23,7 @@ export const checkIn = async (req, res, next) => {
 
     const checkin = await CheckIn.create({
       ticket_id,
-      checked_in_by: req.user.id,
+      checked_in_by: req.user?.id || null,
     });
 
     res.status(201).json({

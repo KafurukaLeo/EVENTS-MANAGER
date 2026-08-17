@@ -18,11 +18,27 @@ const router = express.Router();
  *     tags: [Tickets]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - event_id
+ *               - registration_id
+ *             properties:
+ *               event_id:
+ *                 type: integer
+ *               registration_id:
+ *                 type: integer
+ *               user_id:
+ *                 type: integer
  *     responses:
  *       201:
  *         description: Ticket created
  */
-router.post("/", authenticate, createTicket);
+router.post("/", createTicket);
 
 /**
  * @swagger
@@ -36,7 +52,7 @@ router.post("/", authenticate, createTicket);
  *       200:
  *         description: List of tickets
  */
-router.get("/", authenticate, getTickets);
+router.get("/", getTickets);
 
 /**
  * @swagger
@@ -56,5 +72,5 @@ router.get("/", authenticate, getTickets);
  *       200:
  *         description: Ticket details
  */
-router.get("/:id", authenticate, getTicket);
+router.get("/:id", getTicket);
 export default router;

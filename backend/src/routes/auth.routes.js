@@ -15,7 +15,7 @@ const router = express.Router();
  * @swagger
  * /api/auth/register:
  *   post:
- *     summary: Register a new user
+ *     summary: Register
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -48,7 +48,7 @@ router.post("/register", registerValidator, validate, register);
  * @swagger
  * /api/auth/login:
  *   post:
- *     summary: Login a user
+ *     summary: Login
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -78,7 +78,7 @@ router.post("/login", loginValidator, validate, login);
  * @swagger
  * /api/auth/me:
  *   post:
- *     summary: Get current authenticated user
+ *     summary: Get current authenticated
  *     tags: [Auth]
  *     security:
  *       - bearerAuth: []

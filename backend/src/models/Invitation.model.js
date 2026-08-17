@@ -3,9 +3,9 @@ import db from "../config/database.js";
 const Invitation = {
   async create(data) {
     const result = await db.query(
-      ` INSERT INTO invitation(event_id, email, send_id, token ) VALUES($1,$2,$3,$4) RETURNING *
+      ` INSERT INTO invitations(event_id, email, sender_id, token ) VALUES($1,$2,$3,$4) RETURNING *
             `,
-      [data.event_id, data.email, data.send_id, data.token],
+      [data.event_id, data.email, data.sender_id, data.token],
     );
 
     return result.rows[0];
@@ -23,6 +23,19 @@ const Invitation = {
     );
 
     return result.rows;
+  },
+
+  async findByToken(token) {
+    const result = await db.query(
+      `
+        SELECT *
+        FROM invitations
+        WHERE token = $1
+        `,
+      [token],
+    );
+
+    return result.rows[0];
   },
 
   async accept(token) {

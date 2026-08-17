@@ -1,15 +1,16 @@
 import Guest from "../models/guest.model.js";
+
 export const createGuest = async (req, res, next) => {
   try {
-    const guest = await User.create({
+    const guest = await Guest.create({
       ...req.body,
-      user_id: req.user.id,
+      user_id: req.body.user_id || req.user?.id || null,
     });
     res.status(201).json({
       success: true,
       data: guest,
     });
-  } catch (erro) {
+  } catch (error) {
     next(error);
   }
 };
@@ -21,11 +22,11 @@ export const getGuests = async (req, res, next) => {
       success: true,
       data: guests,
     });
-    7;
   } catch (error) {
     next(error);
   }
 };
+
 export const getGuest = async (req, res, next) => {
   try {
     const guest = await Guest.findById(req.params.id);
@@ -47,7 +48,7 @@ export const getGuest = async (req, res, next) => {
 
 export const updateGuest = async (req, res, next) => {
   try {
-    const guest = await guest.update(req.params.id, req.body);
+    const guest = await Guest.update(req.params.id, req.body);
     res.json({
       success: true,
       data: guest,

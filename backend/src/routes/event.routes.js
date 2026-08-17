@@ -53,14 +53,33 @@ router.get("/:id", getEvent);
  *     tags: [Events]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *             properties:
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               event_date:
+ *                 type: string
+ *               start_time:
+ *                 type: string
+ *               end_time:
+ *                 type: string
+ *               capacity:
+ *                 type: integer
  *     responses:
  *       201:
  *         description: Event created
  */
 router.post(
   "/",
-  authenticate,
-  authorize("Admin", "Organizer"),
   createEventValidator,
   validate,
   createEvent,
@@ -80,11 +99,30 @@ router.post(
  *         required: true
  *         schema:
  *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               event_date:
+ *                 type: string
+ *               start_time:
+ *                 type: string
+ *               end_time:
+ *                 type: string
+ *               capacity:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Event updated
  */
-router.put("/:id", authenticate, authorize("Admin", "organizer"), updateEvent);
+router.put("/:id", updateEvent);
 
 /**
  * @swagger
@@ -106,8 +144,6 @@ router.put("/:id", authenticate, authorize("Admin", "organizer"), updateEvent);
  */
 router.delete(
   "/:id",
-  authenticate,
-  authorize("Admin", "Organizer"),
   deleteEvent,
 );
 

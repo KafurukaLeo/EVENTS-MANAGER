@@ -35,7 +35,7 @@ const router = express.Router();
  *       201:
  *         description: Registration successful
  */
-router.post("/", authenticate, registerForEvent);
+router.post("/", registerForEvent);
 
 /**
  * @swagger
@@ -49,7 +49,7 @@ router.post("/", authenticate, registerForEvent);
  *       200:
  *         description: List of registrations
  */
-router.get("/", authenticate, getRegistrations);
+router.get("/", getRegistrations);
 
 /**
  * @swagger
@@ -63,6 +63,6 @@ router.get("/", authenticate, getRegistrations);
  *       200:
  *         description: Registration cancelled
  */
-router.delete("/", authenticate, cancelRegistration);
+router.delete("/", cancelRegistration);
 
 export default router;

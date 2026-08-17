@@ -4,7 +4,7 @@ export const createEvent = async (req, res, next) => {
   try {
     const event = await Event.create({
       ...req.body,
-      organizer_id: req.user.id,
+      organizer_id: req.user?.id || null,
     });
 
     res.status(201).json({

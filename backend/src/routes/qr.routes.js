@@ -23,5 +23,5 @@ const router = express.Router();
  *       200:
  *         description: QR Code generated
  */
-router.get("/:ticketId", authenticate, generateQR);
+router.get("/:ticketId", generateQR);
 export default router;

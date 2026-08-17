@@ -1,42 +1,30 @@
 import express from "express";
-import { checkIn, getCheckIns } from "../controllers/checkin.controller.js";
-
-import authenticate from "../middlewares/authenticate.middleware.js";
-import authorize from "../middlewares/authorize.middleware.js";
+import { getReportSummary } from "../controllers/report.controller.js";
 
 const router = express.Router();
 
 /**
  * @swagger
  * /api/reports:
- *   post:
- *     summary: Generate a report
+ *   get:
+ *     summary: Get dashboard reports summary
  *     tags: [Reports]
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Report generated
+ *         description: Dashboard report statistics
  */
-router.post(
-  "/",
-  authenticate,
-  authorize("admin", "organizer", "staff"),
-  checkIn,
-);
+router.get("/", getReportSummary);
 
 /**
  * @swagger
  * /api/reports:
- *   get:
- *     summary: Get all reports
+ *   post:
+ *     summary: Generate dashboard reports summary
  *     tags: [Reports]
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: List of reports
+ *         description: Dashboard report statistics
  */
-router.get("/", authenticate, getCheckIns);
+router.post("/", getReportSummary);
 
 export default router;

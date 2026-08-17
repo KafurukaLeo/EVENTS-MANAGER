@@ -5,7 +5,7 @@ export const createPayment = async (req, res, next) => {
   try {
     const payment = await Payment.create({
       ...req.body,
-      user_id: req.user.id,
+      user_id: req.user?.id || null,
     });
 
     res.status(201).json({
@@ -19,7 +19,7 @@ export const createPayment = async (req, res, next) => {
 
 export const getPayments = async (req, res, next) => {
   try {
-    const payments = await Payment.findByUser(req.user.id);
+    const payments = await Payment.findByUser(req.user?.id || null);
 
     res.json({
       success: true,
@@ -36,6 +36,14 @@ export const uploadPaymentProof = async (req, res, next) => {
       return res.status(400).json({
         success: false,
         message: "Payment proof is required",
+      });
+    }
+
+    const payment = await Payment.findById(req.params.id);
+    if (!payment) {
+      return res.status(404).json({
+        success: false,
+        message: `Payment with ID ${req.params.id} not found`,
       });
     }
 
