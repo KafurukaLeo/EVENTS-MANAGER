@@ -24,6 +24,14 @@ import AdminGuests from './admin/AdminGuests'
 import AdminTickets from './admin/AdminTickets'
 import AdminInvitations from './admin/AdminInvitations'
 import AdminReports from './admin/AdminReports'
+import VenueLayout from './venue/VenueLayout'
+import VenueOverview from './venue/VenueOverview'
+import VenueEvents from './venue/VenueEvents'
+import VenueGuests from './venue/VenueGuests'
+import VenueInvitations from './venue/VenueInvitations'
+import VenueRegistrations from './venue/VenueRegistrations'
+import VenuePayments from './venue/VenuePayments'
+import VenueCheckIn from './venue/VenueCheckIn'
 
 const App = () => {
   return (
@@ -67,6 +75,17 @@ const App = () => {
         {/* Auth routes without Layout */}
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/forgotPassword" element={<ForgotPassword />} />
+
+        {/* Venue Owner routes */}
+        <Route path="/venue" element={<VenueLayout />}>
+          <Route index element={<VenueOverview />} />
+          <Route path="events" element={<VenueEvents />} />
+          <Route path="guests" element={<VenueGuests />} />
+          <Route path="invitations" element={<VenueInvitations />} />
+          <Route path="registrations" element={<VenueRegistrations />} />
+          <Route path="payments" element={<VenuePayments />} />
+          <Route path="checkin" element={<VenueCheckIn />} />
+        </Route>
 
         {/* Catch-all route for 404 Not Found */}
         <Route path="*" element={<NotFound />} />
