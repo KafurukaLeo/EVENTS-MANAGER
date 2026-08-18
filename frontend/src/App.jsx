@@ -11,6 +11,7 @@ import Contact from './components/layout/Contact'
 import Faq from './components/layout/Faq'
 import About from './components/layout/About'
 import Book from './components/layout/Book'
+import BookDetail from './components/layout/BookDetail'
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
           {/* Public pages */}
           <Route path="/contact" element={<Contact />} />
           <Route path="/book" element={<Book />} />
+          <Route path="/book/:id" element={<BookDetail />} />
           <Route path="/faq" element={<Faq />} />
           <Route path="/about" element={<About />} />
           <Route path="/privacy" element={<Privacy />} />
