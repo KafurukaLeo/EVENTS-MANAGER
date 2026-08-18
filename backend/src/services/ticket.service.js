@@ -1,3 +1,4 @@
+import db from "../config/database.js";
 import ticket from "../models/ticket.model.js";
 import Registration from "../models/registration.model.js";
 import Event from "../models/Event.model.js";
@@ -18,6 +19,17 @@ const ticketService = {
     if (!registration) {
       const error = new Error(`Registration with ID ${data.registration_id} not found`);
       error.statusCode = 404;
+      throw error;
+    }
+
+    // 3. Verify payment is completed
+    const paymentResult = await db.query(
+      "SELECT * FROM payments WHERE registration_id = $1 AND status IN ('Paid', 'Approved', 'Completed')",
+      [data.registration_id]
+    );
+    if (paymentResult.rows.length === 0) {
+      const error = new Error("Payment is required before generating the ticket");
+      error.statusCode = 402;
       throw error;
     }
 

@@ -35,6 +35,12 @@ const qrService = {
                    ticketRow.payment_status === 'Approved' || 
                    ticketRow.payment_status === 'Completed';
 
+    if (!isPaid) {
+      const error = new Error("Payment is required before generating the QR Code");
+      error.statusCode = 402;
+      throw error;
+    }
+
     // Data encoded inside the QR Code
     const qrData = JSON.stringify({
       ticketId: ticketRow.ticket_id,
