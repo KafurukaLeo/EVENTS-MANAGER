@@ -38,6 +38,19 @@ const Registration = {
     return result.rows;
   },
 
+  async findById(id) {
+    const result = await db.query(
+      `
+        SELECT *
+        FROM registrations
+        WHERE id = $1
+        `,
+      [id],
+    );
+
+    return result.rows[0];
+  },
+
   async cancel(id) {
     const result = await db.query(
       `

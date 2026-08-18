@@ -4,8 +4,8 @@ const notificationService = {
   async create(data) {
     return await notification.create(data);
   },
-  async getUserNotification(userId) {
-    return await Notification.findByUser(userId);
+  async getNotifications(userId) {
+    return await notification.findByUser(userId);
   },
 };
 

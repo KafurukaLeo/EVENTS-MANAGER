@@ -1,41 +1,24 @@
-import CheckIn from "../models/CheckIn.model.js";
-import Ticket from "../models/Ticket.model.js";
+import reportService from "../services/report.service.js";
 
-export const checkIn = async (req, res, next) => {
+export const getReportSummary = async (req, res, next) => {
   try {
-    const { ticket_id } = req.body;
+    const events = await reportService.eventReport();
 
-    const ticket = await Ticket.findById(ticket_id);
+    const payments = await reportService.paymentReport();
 
-    if (!ticket) {
-      return res.status(404).json({
-        success: false,
-        message: "Ticket not found",
-      });
-    }
-
-    const checkin = await CheckIn.create({
-      ticket_id,
-      checked_in_by: req.user.id,
-    });
-
-    res.status(201).json({
-      success: true,
-      message: "Guest checked in successfully",
-      data: checkin,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const getCheckIns = async (req, res, next) => {
-  try {
-    const checkins = await CheckIn.findAll();
+    const attendance = await reportService.attendanceReport();
 
     res.json({
       success: true,
-      data: checkins,
+      data: {
+        totalEvents: parseInt(events.total_events || 0, 10),
+
+        totalPayments: parseInt(payments.total_payments || 0, 10),
+
+        totalRevenue: parseFloat(payments.total_amount || 0),
+
+        totalCheckIns: parseInt(attendance.total_checkins || 0, 10),
+      },
     });
   } catch (error) {
     next(error);

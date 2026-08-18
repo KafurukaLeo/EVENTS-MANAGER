@@ -15,14 +15,23 @@ const router = express.Router();
  *     tags: [Check-In]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - ticket_id
+ *             properties:
+ *               ticket_id:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Checked in successfully
  */
 router.post(
   "/",
-  authenticate,
-  authorize("admin", "organizer", "staff"),
   checkIn,
 );
 
@@ -38,6 +47,6 @@ router.post(
  *       200:
  *         description: List of check-ins
  */
-router.get("/", authenticate, getCheckIns);
+router.get("/", getCheckIns);
 
 export default router;

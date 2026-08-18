@@ -23,11 +23,29 @@ const upload = multer({
  *     tags: [Payments]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - registration_id
+ *               - amount
+ *             properties:
+ *               registration_id:
+ *                 type: integer
+ *               user_id:
+ *                 type: integer
+ *               amount:
+ *                 type: number
+ *               method:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Payment created
  */
-router.post("/", authenticate, createPayment);
+router.post("/", createPayment);
 
 /**
  * @swagger
@@ -41,7 +59,7 @@ router.post("/", authenticate, createPayment);
  *       200:
  *         description: List of payments
  */
-router.get("/", authenticate, getPayments);
+router.get("/", getPayments);
 
 /**
  * @swagger
@@ -57,13 +75,24 @@ router.get("/", authenticate, getPayments);
  *           type: string
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - proof
+ *             properties:
+ *               proof:
+ *                 type: string
+ *                 format: binary
  *     responses:
  *       200:
  *         description: Proof uploaded
  */
 router.post(
   "/:id/proof",
-  authenticate,
   upload.single("proof"),
   uploadPaymentProof,
 );

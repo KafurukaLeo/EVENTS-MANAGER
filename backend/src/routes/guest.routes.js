@@ -20,11 +20,35 @@ const router = express.Router();
  *     tags: [Guests]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - event_id
+ *               - name
+ *               - email
+ *             properties:
+ *               event_id:
+ *                 type: integer
+ *               user_id:
+ *                 type: integer
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               phone:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Guest created
  */
-router.post("/", authenticate, createGuest);
+router.post(
+  "/",
+  createGuest,
+);
 
 /**
  * @swagger
@@ -38,7 +62,7 @@ router.post("/", authenticate, createGuest);
  *       200:
  *         description: List of guests
  */
-router.get("/", authenticate, getGuests);
+router.get("/", getGuests);
 
 /**
  * @swagger
@@ -58,7 +82,7 @@ router.get("/", authenticate, getGuests);
  *       200:
  *         description: Guest details
  */
-router.get("/:id", authenticate, getGuest);
+router.get("/:id", getGuest);
 
 /**
  * @swagger
@@ -74,11 +98,24 @@ router.get("/:id", authenticate, getGuest);
  *           type: string
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               phone:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Guest updated
  */
-router.put("/:id", authenticate, updateGuest);
+router.put("/:id", updateGuest);
 
 /**
  * @swagger
@@ -98,5 +135,5 @@ router.put("/:id", authenticate, updateGuest);
  *       200:
  *         description: Guest deleted
  */
-router.delete("/:id", authenticate, deleteGuest);
+router.delete("/:id", deleteGuest);
 export default router;
