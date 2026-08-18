@@ -12,6 +12,8 @@ import Faq from './components/layout/Faq'
 import About from './components/layout/About'
 import Book from './components/layout/Book'
 import BookDetail from './components/layout/BookDetail'
+import Event from './components/layout/Event'
+import EventDetail from './components/layout/EventDetail'
 
 const App = () => {
   return (
@@ -29,6 +31,14 @@ const App = () => {
           <Route path="/about" element={<About />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
+
+          {/* booking venue or location route */}
+          <Route path="/book" element={<Book />} />
+          <Route path="/book/:id" element={<BookDetail />} />
+
+          {/* buying ticket route */}
+          <Route path="/events" element={<Event />} />
+          <Route path="/events/:id" element={<EventDetail />} />
         </Route>
         
         {/* Auth routes without Layout */}
