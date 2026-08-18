@@ -13,7 +13,6 @@ import {
   FaCheckCircle,
   FaComments,
   FaEnvelope,
-  FaArrowRight
 } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 

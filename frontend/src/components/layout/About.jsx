@@ -188,24 +188,41 @@ const About = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Hero Section */}
-      <header className="relative bg-gradient-to-r from-blue-600 to-indigo-600 py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
-            <FaRocket className="h-4 w-4 text-blue-200" aria-hidden="true" />
-            <span className="text-blue-100 text-sm font-medium">About EventManager</span>
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+      <header className="relative overflow-hidden bg-[#1e3a8a] px-4 py-20">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 opacity-[0.06]"
+          style={{
+            backgroundImage:
+              'radial-gradient(circle, #fff 1px, transparent 1px)',
+            backgroundSize: '18px 18px'
+          }}
+        />
+        <div className="relative max-w-4xl mx-auto text-center">
+          <span className="inline-flex items-center space-x-2 rounded-full border border-white/20 px-4 py-2 text-xs font-medium uppercase tracking-[0.2em] text-[#3b82f6] font-['IBM_Plex_Mono',monospace]">
+            <FaRocket className="h-3.5 w-3.5" aria-hidden="true" />
+            <span>About EventManager</span>
+          </span>
+          <h1 className="mt-6 text-4xl md:text-5xl font-bold tracking-tight text-white font-['Space_Grotesk',sans-serif]">
             Revolutionizing Event Management
           </h1>
-          <p className="text-xl text-blue-100 max-w-2xl mx-auto">
+          <p className="mx-auto mt-4 max-w-2xl text-xl text-blue-100">
             We're on a mission to make event management simple, efficient, and enjoyable for everyone.
           </p>
         </div>
-        <div className="absolute bottom-0 left-0 right-0" aria-hidden="true">
-          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="#F9FAFB"/>
-          </svg>
-        </div>
+
+        {/* Perforated edge, ticket-style, matching the Contact page */}
+        <svg
+          aria-hidden="true"
+          className="absolute -bottom-1 left-0 right-0 h-6 w-full text-gray-50"
+          viewBox="0 0 400 20"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M0 20 C 0 20 8 0 16 0 C 24 0 24 20 32 20 C 40 20 40 0 48 0 C 56 0 56 20 64 20 C 72 20 72 0 80 0 C 88 0 88 20 96 20 C 104 20 104 0 112 0 C 120 0 120 20 128 20 C 136 20 136 0 144 0 C 152 0 152 20 160 20 C 168 20 168 0 176 0 C 184 0 184 20 192 20 C 200 20 200 0 208 0 C 216 0 216 20 224 20 C 232 20 232 0 240 0 C 248 0 248 20 256 20 C 264 20 264 0 272 0 C 280 0 280 20 288 20 C 296 20 296 0 304 0 C 312 0 312 20 320 20 C 328 20 328 0 336 0 C 344 0 344 20 352 20 C 360 20 360 0 368 0 C 376 0 376 20 384 20 C 392 20 392 0 400 0 L400 20 Z"
+            fill="currentColor"
+          />
+        </svg>
       </header>
 
       {/* Stats Section */}
@@ -311,7 +328,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* Team Section */}
+      {/* Team Section 
       <section aria-labelledby="team-heading" className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -343,33 +360,7 @@ const About = () => {
           </div>
         </div>
       </section>
-
-      {/* CTA Section */}
-      <section aria-labelledby="cta-heading" className="bg-gradient-to-r from-blue-600 to-indigo-600 py-16">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 id="cta-heading" className="text-3xl font-bold text-white mb-4">
-            Ready to Get Started?
-          </h2>
-          <p className="text-xl text-blue-100 mb-8">
-            Join thousands of event organizers who trust EventManager.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link
-              to="/auth?mode=signup"
-              className="inline-flex items-center justify-center px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-blue-600"
-            >
-              Start Free Trial
-              <FaRocket className="ml-2 h-4 w-4" aria-hidden="true" />
-            </Link>
-            <Link
-              to="/contact"
-              className="inline-flex items-center justify-center px-6 py-3 border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-blue-600"
-            >
-              Contact Sales
-            </Link>
-          </div>
-        </div>
-      </section>
+        */}
     </div>
   )
 }
