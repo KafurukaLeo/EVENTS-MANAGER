@@ -7,6 +7,9 @@ import Privacy from './components/common/Privacy'
 import NotFound from './pages/NotFound'
 import Layout from './components/layout/Layout'
 import Home from './components/layout/Home'
+import Contact from './components/layout/Contact'
+import Faq from './components/layout/Faq'
+import About from './components/layout/About'
 
 const App = () => {
   return (
@@ -17,8 +20,11 @@ const App = () => {
           <Route index element={<Home />} />
 
           {/* Public pages */}
-          <Route path="/terms" element={<Terms />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/faq" element={<Faq />} />
+          <Route path="/about" element={<About />} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
         </Route>
         
         {/* Auth routes without Layout */}

@@ -1,5 +1,5 @@
 // frontend/src/components/layout/Navbar.jsx
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { 
   FaCalendarAlt,
@@ -10,7 +10,6 @@ import {
   FaCog,
   FaChevronDown,
   FaSignInAlt,
-  FaUserPlus,
   FaHome,
   FaInfoCircle,
   FaEnvelope,
@@ -47,6 +46,19 @@ const Navbar = () => {
     { to: '/attendees', label: 'Attendees', icon: FaUsers },
   ]
 
+  // Helper function to get active link classes
+  const getActiveLinkClasses = ({ isActive }) => {
+    return isActive
+      ? 'flex items-center space-x-1 px-3 py-2 rounded-lg text-sm font-medium text-blue-600 bg-blue-50 transition-all duration-200 group'
+      : 'flex items-center space-x-1 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 group'
+  }
+
+  const getMobileActiveLinkClasses = ({ isActive }) => {
+    return isActive
+      ? 'flex items-center space-x-2 px-3 py-2 rounded-lg text-base font-medium text-blue-600 bg-blue-50 transition-all duration-200'
+      : 'flex items-center space-x-2 px-3 py-2 rounded-lg text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200'
+  }
+
   return (
     <nav className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -66,25 +78,34 @@ const Navbar = () => {
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex md:items-center md:space-x-1">
             {navLinks.map((link) => (
-              <Link
+              <NavLink
                 key={link.to}
                 to={link.to}
-                className="flex items-center space-x-1 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 group"
+                className={getActiveLinkClasses}
+                end={link.to === '/'}
               >
-                <link.icon className="h-4 w-4 group-hover:scale-110 transition-transform" />
-                <span>{link.label}</span>
-              </Link>
+                {({ isActive }) => (
+                  <>
+                    <link.icon className={`h-4 w-4 transition-transform ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} />
+                    <span>{link.label}</span>
+                  </>
+                )}
+              </NavLink>
             ))}
             
             {isAuthenticated && authenticatedLinks.map((link) => (
-              <Link
+              <NavLink
                 key={link.to}
                 to={link.to}
-                className="flex items-center space-x-1 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 group"
+                className={getActiveLinkClasses}
               >
-                <link.icon className="h-4 w-4 group-hover:scale-110 transition-transform" />
-                <span>{link.label}</span>
-              </Link>
+                {({ isActive }) => (
+                  <>
+                    <link.icon className={`h-4 w-4 transition-transform ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} />
+                    <span>{link.label}</span>
+                  </>
+                )}
+              </NavLink>
             ))}
           </div>
 
@@ -146,30 +167,48 @@ const Navbar = () => {
                       <p className="text-xs text-gray-500">john@example.com</p>
                     </div>
                     <div className="py-1">
-                      <Link
+                      <NavLink
                         to="/profile"
-                        className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                        className={({ isActive }) => 
+                          `flex items-center space-x-2 px-4 py-2 text-sm transition-colors ${
+                            isActive 
+                              ? 'text-blue-600 bg-blue-50' 
+                              : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+                          }`
+                        }
                         onClick={() => setIsDropdownOpen(false)}
                       >
                         <FaUser className="h-4 w-4" />
                         <span>Profile</span>
-                      </Link>
-                      <Link
+                      </NavLink>
+                      <NavLink
                         to="/settings"
-                        className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                        className={({ isActive }) => 
+                          `flex items-center space-x-2 px-4 py-2 text-sm transition-colors ${
+                            isActive 
+                              ? 'text-blue-600 bg-blue-50' 
+                              : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+                          }`
+                        }
                         onClick={() => setIsDropdownOpen(false)}
                       >
                         <FaCog className="h-4 w-4" />
                         <span>Settings</span>
-                      </Link>
-                      <Link
+                      </NavLink>
+                      <NavLink
                         to="/help"
-                        className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                        className={({ isActive }) => 
+                          `flex items-center space-x-2 px-4 py-2 text-sm transition-colors ${
+                            isActive 
+                              ? 'text-blue-600 bg-blue-50' 
+                              : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+                          }`
+                        }
                         onClick={() => setIsDropdownOpen(false)}
                       >
                         <FaQuestionCircle className="h-4 w-4" />
                         <span>Help & Support</span>
-                      </Link>
+                      </NavLink>
                     </div>
                     <div className="border-t border-gray-200 pt-1">
                       <button
@@ -185,13 +224,19 @@ const Navbar = () => {
               </div>
             ) : (
               <div className="flex items-center space-x-2">
-                <Link
+                <NavLink
                   to="/auth"
-                  className="flex items-center space-x-1 px-4 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                  className={({ isActive }) =>
+                    `flex items-center space-x-1 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                      isActive
+                        ? 'text-blue-600 bg-blue-50'
+                        : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
+                    }`
+                  }
                 >
                   <FaSignInAlt className="h-4 w-4" />
                   <span>Sign In</span>
-                </Link>
+                </NavLink>
               </div>
             )}
           </div>
@@ -213,40 +258,53 @@ const Navbar = () => {
         <div className="md:hidden bg-white border-b border-gray-200 shadow-lg">
           <div className="px-2 pt-2 pb-3 space-y-1">
             {navLinks.map((link) => (
-              <Link
+              <NavLink
                 key={link.to}
                 to={link.to}
-                className="flex items-center space-x-2 px-3 py-2 rounded-lg text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200"
+                className={getMobileActiveLinkClasses}
+                end={link.to === '/'}
                 onClick={() => setIsMenuOpen(false)}
               >
-                <link.icon className="h-5 w-5" />
-                <span>{link.label}</span>
-              </Link>
+                {({ isActive }) => (
+                  <>
+                    <link.icon className={`h-5 w-5 ${isActive ? 'text-blue-600' : ''}`} />
+                    <span>{link.label}</span>
+                  </>
+                )}
+              </NavLink>
             ))}
             
             {isAuthenticated && authenticatedLinks.map((link) => (
-              <Link
+              <NavLink
                 key={link.to}
                 to={link.to}
-                className="flex items-center space-x-2 px-3 py-2 rounded-lg text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200"
+                className={getMobileActiveLinkClasses}
                 onClick={() => setIsMenuOpen(false)}
               >
-                <link.icon className="h-5 w-5" />
-                <span>{link.label}</span>
-              </Link>
+                {({ isActive }) => (
+                  <>
+                    <link.icon className={`h-5 w-5 ${isActive ? 'text-blue-600' : ''}`} />
+                    <span>{link.label}</span>
+                  </>
+                )}
+              </NavLink>
             ))}
 
             <div className="border-t border-gray-200 pt-2 mt-2">
               {isAuthenticated ? (
                 <>
-                  <Link
+                  <NavLink
                     to="/profile"
-                    className="flex items-center space-x-2 px-3 py-2 rounded-lg text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200"
+                    className={getMobileActiveLinkClasses}
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <FaUser className="h-5 w-5" />
-                    <span>Profile</span>
-                  </Link>
+                    {({ isActive }) => (
+                      <>
+                        <FaUser className={`h-5 w-5 ${isActive ? 'text-blue-600' : ''}`} />
+                        <span>Profile</span>
+                      </>
+                    )}
+                  </NavLink>
                   <button
                     onClick={() => {
                       handleLogout()
@@ -260,14 +318,18 @@ const Navbar = () => {
                 </>
               ) : (
                 <>
-                  <Link
+                  <NavLink
                     to="/auth"
-                    className="flex items-center space-x-2 px-3 py-2 rounded-lg text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200"
+                    className={getMobileActiveLinkClasses}
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <FaSignInAlt className="h-5 w-5" />
-                    <span>Sign In</span>
-                  </Link>
+                    {({ isActive }) => (
+                      <>
+                        <FaSignInAlt className={`h-5 w-5 ${isActive ? 'text-blue-600' : ''}`} />
+                        <span>Sign In</span>
+                      </>
+                    )}
+                  </NavLink>
                 </>
               )}
             </div>

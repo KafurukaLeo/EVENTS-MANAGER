@@ -24,6 +24,7 @@ const Footer = () => {
     { to: '/create-event', label: 'Create Event' },
     { to: '/about', label: 'About Us' },
     { to: '/contact', label: 'Contact' },
+    { to: '/faq', label: 'FAQ' },
   ]
 
   const authenticatedLinks = [
@@ -93,9 +94,9 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2">
+            <h3 className="text-lg font-semibold mb-4 items-center space-x-2">
               <span>Quick Links</span>
-              <div className="h-0.5 w-8 bg-blue-500 rounded"></div>
+              <div className="h-0.5 w-10 bg-blue-500 rounded"></div>
             </h3>
             <ul className="space-y-2.5">
               {quickLinks.map((link) => (
@@ -115,9 +116,9 @@ const Footer = () => {
           {/* Authenticated Links - Show only when logged in */}
           {isAuthenticated && (
             <div>
-              <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2">
+              <h3 className="text-lg font-semibold mb-4 items-center space-x-2">
                 <span>My Account</span>
-                <div className="h-0.5 w-8 bg-indigo-500 rounded"></div>
+                <div className="h-0.5 w-12 bg-indigo-500 rounded"></div>
               </h3>
               <ul className="space-y-2.5">
                 {authenticatedLinks.map((link) => (
@@ -137,9 +138,9 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2">
+            <h3 className="text-lg font-semibold mb-4 items-center space-x-2">
               <span>Get in Touch</span>
-              <div className="h-0.5 w-8 bg-blue-500 rounded"></div>
+              <div className="h-0.5 w-12 bg-blue-500 rounded"></div>
             </h3>
             <ul className="space-y-3">
               <li className="flex items-start space-x-3 text-sm text-gray-400">
