@@ -17,7 +17,8 @@ import {
   FaTachometerAlt,
   FaUsers,
   FaTicketAlt,
-  FaBell
+  FaBell,
+  FaMapMarkerAlt  // Added for Book icon
 } from 'react-icons/fa'
 import { IoCalendarOutline } from 'react-icons/io5'
 
@@ -36,6 +37,7 @@ const Navbar = () => {
   const navLinks = [
     { to: '/', label: 'Home', icon: FaHome },
     { to: '/events', label: 'Events', icon: FaCalendarAlt },
+    { to: '/book', label: 'Book Venue', icon: FaMapMarkerAlt }, // Added Book link
     { to: '/about', label: 'About', icon: FaInfoCircle },
     { to: '/contact', label: 'Contact', icon: FaEnvelope },
   ]

@@ -10,6 +10,7 @@ import Home from './components/layout/Home'
 import Contact from './components/layout/Contact'
 import Faq from './components/layout/Faq'
 import About from './components/layout/About'
+import Book from './components/layout/Book'
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
 
           {/* Public pages */}
           <Route path="/contact" element={<Contact />} />
+          <Route path="/book" element={<Book />} />
           <Route path="/faq" element={<Faq />} />
           <Route path="/about" element={<About />} />
           <Route path="/privacy" element={<Privacy />} />
