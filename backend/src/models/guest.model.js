@@ -10,12 +10,20 @@ const Guest = {
           user_id,
           name,
           email,
-          phone
+          phone,
+          registration_id
         )
-        VALUES ($1,$2,$3,$4,$5)
+        VALUES ($1,$2,$3,$4,$5,$6)
         RETURNING *
         `,
-      [data.event_id, data.user_id, data.name, data.email, data.phone],
+      [
+        data.event_id,
+        data.user_id,
+        data.name,
+        data.email,
+        data.phone,
+        data.registration_id || null
+      ],
     );
 
     return result.rows[0];
@@ -23,9 +31,14 @@ const Guest = {
 
   async findAll() {
     const result = await db.query(`
-        SELECT *
-        FROM guests
-        ORDER BY created_at DESC
+        SELECT 
+          g.*,
+          COALESCE(p.status, 'Unpaid') AS payment_status,
+          COALESCE(p.amount, 0) AS payment_amount
+        FROM guests g
+        LEFT JOIN registrations r ON r.id = g.registration_id
+        LEFT JOIN payments p ON p.registration_id = r.id
+        ORDER BY g.created_at DESC
       `);
 
     return result.rows;
@@ -34,9 +47,14 @@ const Guest = {
   async findById(id) {
     const result = await db.query(
       `
-        SELECT *
-        FROM guests
-        WHERE id = $1
+        SELECT 
+          g.*,
+          COALESCE(p.status, 'Unpaid') AS payment_status,
+          COALESCE(p.amount, 0) AS payment_amount
+        FROM guests g
+        LEFT JOIN registrations r ON r.id = g.registration_id
+        LEFT JOIN payments p ON p.registration_id = r.id
+        WHERE g.id = $1
         `,
       [id],
     );

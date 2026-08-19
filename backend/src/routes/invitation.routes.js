@@ -58,6 +58,8 @@ router.get("/accept", acceptInvitationGet);
  */
 router.post(
   "/",
+  authenticate,
+  authorize("admin", "eventmanager"),
   createInvitation,
 );
 
@@ -73,7 +75,7 @@ router.post(
  *       200:
  *         description: List of invitations
  */
-router.get("/", getInvitations);
+router.get("/", authenticate, authorize("admin", "eventmanager"), getInvitations);
 
 /**
  * @swagger

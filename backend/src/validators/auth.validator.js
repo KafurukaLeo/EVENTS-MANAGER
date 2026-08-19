@@ -1,15 +1,19 @@
 import { body } from "express-validator";
 
 export const registerValidator = [
-  body("name").trim().notEmpty().withMessage("Name is required"),
+  body("names").custom((value, { req }) => {
+    const val = value || req.body.name;
+    if (!val || val.trim().length === 0) {
+      throw new Error("Names is required");
+    }
+    return true;
+  }),
 
   body("email").isEmail().withMessage("Valid email is required"),
 
   body("password")
     .isLength({ min: 6 })
     .withMessage("Password must be at least 6 characters"),
-
-  body("role").trim().notEmpty().withMessage("Role is required"),
 ];
 
 export const loginValidator = [

@@ -3,13 +3,13 @@ import db from "../config/database.js";
 import Invitation from "../models/Invitation.model.js";
 import Event from "../models/Event.model.js";
 import Registration from "../models/registration.model.js";
-import ticketService from "./ticket.service.js";
-import qrService from "./qr.service.js";
+import Guest from "../models/guest.model.js";
+import Payment from "../models/Payment.model.js";
+import gatewayService from "./gateway.service.js";
 import { sendInvitationEmail } from "../utils/mailer.js";
 
 const invitationService = {
   async createInvitation(data) {
-    // Verify that event exists first
     const event = await Event.findById(data.event_id);
     if (!event) {
       const error = new Error(`Event with ID ${data.event_id} not found`);
@@ -24,7 +24,6 @@ const invitationService = {
       token,
     });
 
-    // Send the email in the background without blocking the API response
     sendInvitationEmail(data.email, event.name, token);
 
     return invitation;
@@ -35,7 +34,6 @@ const invitationService = {
   },
 
   async acceptInvitation(token) {
-    // 1. Verify token exists
     const existing = await Invitation.findByToken(token);
     if (!existing) {
       const error = new Error("Invalid invitation token");
@@ -43,63 +41,70 @@ const invitationService = {
       throw error;
     }
 
-    // If it's already accepted, return the existing ticket info
     if (existing.status === 'accepted') {
-      const event = await Event.findById(existing.event_id);
       const registrationResult = await db.query(
-        "SELECT * FROM registrations WHERE event_id = $1 AND user_id IS NULL LIMIT 1",
+        "SELECT * FROM registrations WHERE event_id = $1 AND user_id IS NULL ORDER BY created_at DESC LIMIT 1",
         [existing.event_id]
       );
       const registration = registrationResult.rows[0];
-      const ticket = await ticketService.getTickets(registration?.user_id || null);
-      const { qrCode } = await qrService.generateQR(ticket[0]?.id);
-
-      return {
-        invitation: existing,
-        event,
-        registration,
-        ticket: ticket[0],
-        qrCode,
-      };
+      
+      if (registration) {
+        const payResult = await db.query(
+          "SELECT * FROM payments WHERE registration_id = $1 ORDER BY created_at DESC LIMIT 1",
+          [registration.id]
+        );
+        const payment = payResult.rows[0];
+        
+        if (payment && (payment.status === 'Paid' || payment.status === 'Approved' || payment.status === 'Completed')) {
+          return {
+            status: 'paid',
+            registration,
+            payment
+          };
+        } else if (payment) {
+          const callbackUrl = `http://localhost:5000/api/payments/webhook`;
+          const { checkoutUrl } = await gatewayService.initializePayment(payment.id, payment.amount, callbackUrl);
+          return {
+            status: 'pending',
+            checkoutUrl
+          };
+        }
+      }
     }
 
-    // 2. Accept the invitation
     const invitation = await Invitation.accept(token);
 
-    // 3. Fetch event info
-    const event = await Event.findById(invitation.event_id);
-
-    // 4. Create event registration
     const registration = await Registration.create({
       event_id: invitation.event_id,
-      user_id: null, // guest registration
-    });
-
-    // 5. Create ticket
-    const ticket = await ticketService.createTicket({
-      event_id: invitation.event_id,
-      registration_id: registration.id,
       user_id: null,
     });
 
-    // 6. Create successful payment
+    await Guest.create({
+      event_id: invitation.event_id,
+      user_id: null,
+      name: invitation.email.split('@')[0],
+      email: invitation.email,
+      registration_id: registration.id
+    });
+
+    const payment = await Payment.create({
+      registration_id: registration.id,
+      user_id: null,
+      amount: 50.00,
+      method: "Gateway"
+    });
+
+    const callbackUrl = `http://localhost:5000/api/payments/webhook`;
+    const { checkoutUrl, gatewayReference } = await gatewayService.initializePayment(payment.id, payment.amount, callbackUrl);
+
     await db.query(
-      `
-      INSERT INTO payments (registration_id, user_id, amount, method, status)
-      VALUES ($1, $2, $3, 'Online Credit Card', 'Paid')
-      `,
-      [registration.id, null, 50.00]
+      "UPDATE payments SET gateway_reference = $1 WHERE id = $2",
+      [gatewayReference, payment.id]
     );
 
-    // 7. Generate QR Code
-    const { qrCode } = await qrService.generateQR(ticket.id);
-
     return {
-      invitation,
-      event,
-      registration,
-      ticket,
-      qrCode,
+      status: 'initialized',
+      checkoutUrl
     };
   },
 };

@@ -80,6 +80,8 @@ router.get("/:id", getEvent);
  */
 router.post(
   "/",
+  authenticate,
+  authorize("admin", "eventmanager"),
   createEventValidator,
   validate,
   createEvent,
@@ -122,7 +124,7 @@ router.post(
  *       200:
  *         description: Event updated
  */
-router.put("/:id", updateEvent);
+router.put("/:id", authenticate, authorize("admin", "eventmanager"), updateEvent);
 
 /**
  * @swagger
@@ -144,6 +146,8 @@ router.put("/:id", updateEvent);
  */
 router.delete(
   "/:id",
+  authenticate,
+  authorize("admin", "eventmanager"),
   deleteEvent,
 );
 

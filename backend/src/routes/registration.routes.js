@@ -26,10 +26,15 @@ const router = express.Router();
  *             required:
  *               - event_id
  *               - email
+ *               - names
  *             properties:
  *               event_id:
  *                 type: integer
  *               email:
+ *                 type: string
+ *               names:
+ *                 type: string
+ *               phone:
  *                 type: string
  *     responses:
  *       201:

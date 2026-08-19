@@ -67,7 +67,11 @@ const AuthPage = () => {
 
           {/* Forms */}
           <div className="transition-all duration-300">
-            {activeTab === 'login' ? <LoginForm redirect={redirect} /> : <RegisterForm />}
+            {activeTab === 'login' ? (
+              <LoginForm redirect={redirect} />
+            ) : (
+              <RegisterForm onSuccess={() => setActiveTab('login')} />
+            )}
           </div>
 
           {/* Redirect Button */}

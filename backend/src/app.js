@@ -16,6 +16,7 @@ import ticketRoutes from "./routes/ticket.routes.js";
 import qrRoutes from "./routes/qr.routes.js";
 import checkinRoutes from "./routes/checkin.routes.js";
 import reportRoutes from "./routes/report.routes.js";
+import userRoutes from "./routes/user.routes.js";
 
 import errorMiddleware from "./middlewares/error.middleware.js";
 
@@ -120,6 +121,11 @@ app.use("/api/checkin", checkinRoutes);
  * Report routes
  */
 app.use("/api/reports", reportRoutes);
+
+/*
+ * User management routes (Admin only)
+ */
+app.use("/api/users", userRoutes);
 
 /*
  * Global error handler
