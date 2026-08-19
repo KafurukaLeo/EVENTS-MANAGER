@@ -34,7 +34,7 @@ const AuthPage = () => {
             EventManager
           </h1>
           <p className="mt-2 text-gray-600">
-            Manage your events seamlessly
+            For organizers &amp; admins
           </p>
         </div>
 

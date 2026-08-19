@@ -1,19 +1,14 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { User, Mail, Lock, Eye, EyeOff, UserPlus, ChevronDown } from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff, UserPlus } from 'lucide-react';
 import useAuth from '../../hooks/useAuth';
-
-const ROLES = [
-  { value: 'ATTENDEE', label: 'Attendee — I want to attend events' },
-  { value: 'ORGANIZER', label: 'Organizer — I want to host events' },
-];
 
 const RegisterForm = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '', role: 'ATTENDEE' });
+  const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -32,7 +27,7 @@ const RegisterForm = () => {
     }
     setLoading(true);
     try {
-      await register({ name: form.name, email: form.email, password: form.password, role: form.role });
+      await register({ name: form.name, email: form.email, password: form.password, role: 'ORGANIZER' });
       navigate('/auth');
     } catch (err) {
       setError(err.message);
@@ -45,7 +40,7 @@ const RegisterForm = () => {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-gray-900">Create Account</h2>
-        <p className="mt-1 text-sm text-gray-600">Join EventManager and start managing your events</p>
+        <p className="mt-1 text-sm text-gray-600">For organizers and admins only</p>
       </div>
 
       {error && (
@@ -92,25 +87,6 @@ const RegisterForm = () => {
               className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               placeholder="you@example.com"
             />
-          </div>
-        </div>
-
-        {/* Role */}
-        <div className="space-y-1">
-          <label htmlFor="reg-role" className="block text-sm font-medium text-gray-700">I am a...</label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <ChevronDown className="h-5 w-5 text-gray-400" />
-            </div>
-            <select
-              id="reg-role"
-              name="role"
-              value={form.role}
-              onChange={handleChange}
-              className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white"
-            >
-              {ROLES.map(r => <option key={r.value} value={r.value}>{r.label}</option>)}
-            </select>
           </div>
         </div>
 
