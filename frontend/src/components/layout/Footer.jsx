@@ -21,7 +21,7 @@ const Footer = () => {
 
   const quickLinks = [
     { to: '/events', label: 'Browse Events' },
-    { to: '/create-event', label: 'Create Event' },
+    { to: '/venue/events', label: 'Create Event' },
     { to: '/about', label: 'About Us' },
     { to: '/contact', label: 'Contact' },
     { to: '/faq', label: 'FAQ' },
