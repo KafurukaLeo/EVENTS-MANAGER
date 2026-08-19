@@ -50,6 +50,10 @@ const BookDetail = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [loading, setLoading] = useState(true)
   const [venue, setVenue] = useState(null)
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [email, setEmail] = useState('')
+  const [paymentError, setPaymentError] = useState('')
 
   // Mock venue data - In real app, fetch from API
   const venueData = {
@@ -135,14 +139,29 @@ const BookDetail = () => {
 
   const availableDates = generateDates()
 
-  const handleBooking = () => {
+  const handleBookNowClick = () => {
     if (!selectedDate || !selectedTime) {
       alert('Please select a date and time for your booking.')
       return
     }
-    
+    setPhoneNumber('')
+    setEmail('')
+    setPaymentError('')
+    setShowPaymentModal(true)
+  }
+
+  const handlePaymentSubmit = (e) => {
+    e.preventDefault()
+    if (!email.trim()) {
+      setPaymentError('Please enter your email address.')
+      return
+    }
+    if (!phoneNumber.trim()) {
+      setPaymentError('Please enter your payment phone number.')
+      return
+    }
     setIsBooking(true)
-    // Simulate API call
+    setShowPaymentModal(false)
     setTimeout(() => {
       setIsBooking(false)
       setBookingSuccess(true)
@@ -151,6 +170,11 @@ const BookDetail = () => {
         navigate('/book')
       }, 3000)
     }, 2000)
+  }
+
+  const formatSelectedDate = (iso) => {
+    if (!iso) return ''
+    return new Date(iso).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
   }
 
   const nextImage = () => {
@@ -547,7 +571,7 @@ const BookDetail = () => {
                     </div>
                   ) : (
                     <button
-                      onClick={handleBooking}
+                      onClick={handleBookNowClick}
                       disabled={isBooking}
                       className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
                     >
@@ -602,6 +626,115 @@ const BookDetail = () => {
           </div>
         </div>
       </div>
+
+      {/* Payment Modal */}
+      {showPaymentModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+              <div className="flex items-center space-x-2">
+                <div className="bg-blue-100 p-2 rounded-lg">
+                  <FaCreditCard className="h-4 w-4 text-blue-600" />
+                </div>
+                <h2 className="font-semibold text-gray-900">Complete Your Booking</h2>
+              </div>
+              <button
+                onClick={() => setShowPaymentModal(false)}
+                className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <FaTimesCircle className="h-5 w-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handlePaymentSubmit} className="p-6 space-y-5">
+              {/* Booking summary */}
+              <div className="bg-gray-50 rounded-xl p-4 space-y-2">
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-3">Booking Summary</p>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-500 flex items-center gap-2"><FaCalendarAlt className="h-3.5 w-3.5" /> Date</span>
+                  <span className="font-medium text-gray-900">{formatSelectedDate(selectedDate)}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-500 flex items-center gap-2"><FaClock className="h-3.5 w-3.5" /> Time</span>
+                  <span className="font-medium text-gray-900">{selectedTime}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-500 flex items-center gap-2"><FaUsers className="h-3.5 w-3.5" /> Guests</span>
+                  <span className="font-medium text-gray-900">{guestCount}</span>
+                </div>
+                <div className="border-t border-gray-200 pt-2 mt-2 flex items-center justify-between text-sm font-semibold">
+                  <span className="text-gray-700">Total</span>
+                  <span className="text-blue-600 text-base">${venue.price + Math.round(venue.price * 0.05)}</span>
+                </div>
+              </div>
+
+              {/* Email field */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => { setEmail(e.target.value); setPaymentError('') }}
+                    placeholder="you@example.com"
+                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    autoFocus
+                  />
+                </div>
+                <p className="text-xs text-gray-400 mt-1">Booking confirmation will be sent here</p>
+              </div>
+
+              {/* Phone number field */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Mobile Money / Payment Number
+                </label>
+                <div className="relative">
+                  <FaPhone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <input
+                    type="tel"
+                    value={phoneNumber}
+                    onChange={(e) => { setPhoneNumber(e.target.value); setPaymentError('') }}
+                    placeholder="e.g. +250 7XX XXX XXX"
+                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                {paymentError && (
+                  <p className="text-xs text-red-600 mt-1">{paymentError}</p>
+                )}
+                <p className="text-xs text-gray-400 mt-1">Enter the number used to make the payment</p>
+              </div>
+
+              {/* Trust note */}
+              <div className="flex items-center gap-2 text-xs text-gray-500 bg-blue-50 px-3 py-2 rounded-lg">
+                <FaShieldAlt className="h-3.5 w-3.5 text-blue-500 flex-shrink-0" />
+                <span>Your payment details are secure and encrypted</span>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setShowPaymentModal(false)}
+                  className="flex-1 py-2.5 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Back
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all shadow-md"
+                >
+                  Confirm Booking
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

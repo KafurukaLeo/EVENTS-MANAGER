@@ -40,6 +40,11 @@ const EventDetail = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [loading, setLoading] = useState(true)
   const [event, setEvent] = useState(null)
+  const [selectedTicketType, setSelectedTicketType] = useState(0)
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [email, setEmail] = useState('')
+  const [paymentError, setPaymentError] = useState('')
 
   // Mock event data
   const eventData = {
@@ -122,8 +127,25 @@ const EventDetail = () => {
     return stars
   }
 
-  const handleBooking = () => {
+  const handleBuyClick = () => {
+    setPhoneNumber('')
+    setEmail('')
+    setPaymentError('')
+    setShowPaymentModal(true)
+  }
+
+  const handlePaymentSubmit = (e) => {
+    e.preventDefault()
+    if (!email.trim()) {
+      setPaymentError('Please enter your email address.')
+      return
+    }
+    if (!phoneNumber.trim()) {
+      setPaymentError('Please enter your payment phone number.')
+      return
+    }
     setIsBooking(true)
+    setShowPaymentModal(false)
     setTimeout(() => {
       setIsBooking(false)
       setBookingSuccess(true)
@@ -132,6 +154,11 @@ const EventDetail = () => {
         navigate('/events')
       }, 3000)
     }, 2000)
+  }
+
+  const getTicketPrice = () => {
+    if (!event) return 0
+    return event.ticketTypes[selectedTicketType]?.price ?? event.price
   }
 
   if (loading) {
@@ -370,9 +397,13 @@ const EventDetail = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Ticket Type
                     </label>
-                    <select className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <select
+                      value={selectedTicketType}
+                      onChange={(e) => setSelectedTicketType(parseInt(e.target.value))}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
                       {event.ticketTypes.map((ticket, index) => (
-                        <option key={index} value={ticket.price}>
+                        <option key={index} value={index}>
                           {ticket.name} - ${ticket.price} ({ticket.available} available)
                         </option>
                       ))}
@@ -412,16 +443,16 @@ const EventDetail = () => {
                   {/* Price Summary */}
                   <div className="border-t border-gray-200 pt-4 space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">${event.price} x {selectedTickets} ticket{selectedTickets > 1 ? 's' : ''}</span>
-                      <span className="text-gray-900">${event.price * selectedTickets}</span>
+                      <span className="text-gray-600">${getTicketPrice()} x {selectedTickets} ticket{selectedTickets > 1 ? 's' : ''}</span>
+                      <span className="text-gray-900">${getTicketPrice() * selectedTickets}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Service fee</span>
-                      <span className="text-gray-900">${Math.round(event.price * selectedTickets * 0.05)}</span>
+                      <span className="text-gray-900">${Math.round(getTicketPrice() * selectedTickets * 0.05)}</span>
                     </div>
                     <div className="flex justify-between text-sm font-semibold border-t border-gray-200 pt-2">
                       <span className="text-gray-900">Total</span>
-                      <span className="text-gray-900">${event.price * selectedTickets + Math.round(event.price * selectedTickets * 0.05)}</span>
+                      <span className="text-gray-900">${getTicketPrice() * selectedTickets + Math.round(getTicketPrice() * selectedTickets * 0.05)}</span>
                     </div>
                   </div>
 
@@ -434,7 +465,7 @@ const EventDetail = () => {
                     </div>
                   ) : (
                     <button
-                      onClick={handleBooking}
+                      onClick={handleBuyClick}
                       disabled={isBooking}
                       className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
                     >
@@ -497,6 +528,114 @@ const EventDetail = () => {
           </div>
         </div>
       </div>
+
+      {/* Payment Modal */}
+      {showPaymentModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+              <div className="flex items-center space-x-2">
+                <div className="bg-blue-100 p-2 rounded-lg">
+                  <FaCreditCard className="h-4 w-4 text-blue-600" />
+                </div>
+                <h2 className="font-semibold text-gray-900">Complete Your Purchase</h2>
+              </div>
+              <button
+                onClick={() => setShowPaymentModal(false)}
+                className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <FaTimesCircle className="h-5 w-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handlePaymentSubmit} className="p-6 space-y-5">
+              {/* Order summary */}
+              <div className="bg-gray-50 rounded-xl p-4 space-y-2">
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-3">Order Summary</p>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-500 flex items-center gap-2"><FaTicketAlt className="h-3.5 w-3.5" /> Ticket type</span>
+                  <span className="font-medium text-gray-900">{event.ticketTypes[selectedTicketType]?.name}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-500 flex items-center gap-2"><FaUsers className="h-3.5 w-3.5" /> Quantity</span>
+                  <span className="font-medium text-gray-900">{selectedTickets} ticket{selectedTickets > 1 ? 's' : ''}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-500 flex items-center gap-2"><FaCalendarAlt className="h-3.5 w-3.5" /> Event date</span>
+                  <span className="font-medium text-gray-900">{formatDate(event.date)}</span>
+                </div>
+                <div className="border-t border-gray-200 pt-2 mt-2 flex items-center justify-between text-sm font-semibold">
+                  <span className="text-gray-700">Total</span>
+                  <span className="text-blue-600 text-base">${getTicketPrice() * selectedTickets + Math.round(getTicketPrice() * selectedTickets * 0.05)}</span>
+                </div>
+              </div>
+
+              {/* Email field */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => { setEmail(e.target.value); setPaymentError('') }}
+                    placeholder="you@example.com"
+                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    autoFocus
+                  />
+                </div>
+                <p className="text-xs text-gray-400 mt-1">Ticket confirmation will be sent here</p>
+              </div>
+
+              {/* Phone number field */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Mobile Money / Payment Number
+                </label>
+                <div className="relative">
+                  <FaPhone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <input
+                    type="tel"
+                    value={phoneNumber}
+                    onChange={(e) => { setPhoneNumber(e.target.value); setPaymentError('') }}
+                    placeholder="e.g. +250 7XX XXX XXX"
+                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                {paymentError && (
+                  <p className="text-xs text-red-600 mt-1">{paymentError}</p>
+                )}
+                <p className="text-xs text-gray-400 mt-1">Enter the number used to make the payment</p>
+              </div>
+
+              {/* Trust note */}
+              <div className="flex items-center gap-2 text-xs text-gray-500 bg-blue-50 px-3 py-2 rounded-lg">
+                <FaShieldAlt className="h-3.5 w-3.5 text-blue-500 flex-shrink-0" />
+                <span>Your payment details are secure and encrypted</span>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setShowPaymentModal(false)}
+                  className="flex-1 py-2.5 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Back
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all shadow-md"
+                >
+                  Confirm Purchase
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

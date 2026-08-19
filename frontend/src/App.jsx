@@ -32,6 +32,7 @@ import VenueInvitations from './venue/VenueInvitations'
 import VenueRegistrations from './venue/VenueRegistrations'
 import VenuePayments from './venue/VenuePayments'
 import VenueCheckIn from './venue/VenueCheckIn'
+import Tickets from './pages/tickets/Tickets'
 
 const App = () => {
   return (
@@ -40,6 +41,9 @@ const App = () => {
         {/* Home route with Layout */}
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
+
+          {/* ticket booking routes */}
+          <Route path="/tickets" element={<Tickets />} />
 
           {/* Public pages */}
           <Route path="/contact" element={<Contact />} />
