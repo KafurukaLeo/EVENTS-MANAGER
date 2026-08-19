@@ -1,24 +1,16 @@
 // frontend/src/pages/AuthPage.jsx
 import { useState } from 'react';
-import { useSearchParams, useLocation } from 'react-router-dom';
-import { Calendar, ChevronLeft, LogIn, UserPlus } from 'lucide-react';
+import { useSearchParams, Link } from 'react-router-dom';
+import { Calendar, LogIn, UserPlus } from 'lucide-react';
 import LoginForm from '../../components/auth/LoginForm';
 import RegisterForm from '../../components/auth/RegisterForm';
 
 const AuthPage = () => {
   const [activeTab, setActiveTab] = useState('login');
   const [searchParams] = useSearchParams();
-  const location = useLocation();
-  
-  // Get redirect from URL params or use current path
-  const redirect = searchParams.get('redirect') || location.pathname || '/';
-
-  // Handle redirect to current page
-  const handleRedirectToCurrent = () => {
-    // If we're already on the auth page, redirect to home
-    const targetPath = location.pathname === '/auth' ? '/' : location.pathname;
-    window.location.href = targetPath;
-  };
+  const redirect = searchParams.get('redirect') || '/';
+  // Ignore /auth as a redirect target to prevent loops
+  const safeRedirect = redirect === '/auth' ? '/' : redirect;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -26,13 +18,15 @@ const AuthPage = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-3 rounded-2xl shadow-lg">
-              <Calendar className="h-12 w-12 text-white" />
-            </div>
+            <Link to="/" className="flex flex-col items-center gap-3 group">
+              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-3 rounded-2xl shadow-lg group-hover:shadow-xl transition-shadow">
+                <Calendar className="h-12 w-12 text-white" />
+              </div>
+              <h1 className="text-4xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                EventManager
+              </h1>
+            </Link>
           </div>
-          <h1 className="text-4xl font-bold text-gray-900">
-            EventManager
-          </h1>
           <p className="mt-2 text-gray-600">
             For organizers &amp; admins
           </p>
@@ -68,22 +62,12 @@ const AuthPage = () => {
           {/* Forms */}
           <div className="transition-all duration-300">
             {activeTab === 'login' ? (
-              <LoginForm redirect={redirect} />
+              <LoginForm redirect={safeRedirect} />
             ) : (
               <RegisterForm onSuccess={() => setActiveTab('login')} />
             )}
           </div>
 
-          {/* Redirect Button */}
-          <div className="mt-4 pt-4 border-t border-gray-200">
-            <button
-              onClick={handleRedirectToCurrent}
-              className="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors duration-200"
-            >
-              <ChevronLeft className="h-4 w-4 mr-2" />
-              Back
-            </button>
-          </div>
         </div>
 
         {/* Footer */}

@@ -1,19 +1,17 @@
-import {Navigate} from "../react-router-dom";
+import { Navigate, Outlet } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 
-import useAuth from "../hooks/useAuth";
+const RoleRoute = ({ roles }) => {
+  const { isAuthenticated, user } = useAuth();
 
-const RoleRoute = ({children, role}) =>{
-    const {user, loading} = useAuth();
-    if(loading){
-        return <p>Loading...</p>
-    }
+  if (!isAuthenticated) return <Navigate to="/auth" replace />;
 
-    if(!user){
-        return <Navigate to ="/login" replace/>;
-    }
-    if(!roles.includes(user.role)){
-        return <navigate to ="/dashboard" replace/>
-    }
-    return children
-}
+  if (!roles.includes(user?.role)) {
+    const fallback = user?.role === 'admin' ? '/admin' : '/venue';
+    return <Navigate to={fallback} replace />;
+  }
+
+  return <Outlet />;
+};
+
 export default RoleRoute;

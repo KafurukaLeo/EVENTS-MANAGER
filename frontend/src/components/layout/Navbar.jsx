@@ -1,6 +1,5 @@
 // frontend/src/components/layout/Navbar.jsx
-import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
-import useAuth from '../../hooks/useAuth'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { 
   FaCalendarAlt,
@@ -27,20 +26,18 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
-  const { isAuthenticated, user, logout } = useAuth()
+  const isAuthenticated = false // This would come from your auth context/state
   const navigate = useNavigate()
-  const location = useLocation()
 
   const handleLogout = () => {
-    logout()
+    // Add logout logic here
     navigate('/auth')
   }
 
   const navLinks = [
     { to: '/', label: 'Home', icon: FaHome },
     { to: '/events', label: 'Events', icon: FaCalendarAlt },
-    { to: '/book', label: 'Book Venue', icon: FaMapMarkerAlt },
-    { to: '/tickets', label: 'My Tickets', icon: FaTicketAlt },
+    { to: '/book', label: 'Book Venue', icon: FaMapMarkerAlt }, // Added Book link
     { to: '/about', label: 'About', icon: FaInfoCircle },
     { to: '/contact', label: 'Contact', icon: FaEnvelope },
   ]
@@ -160,7 +157,7 @@ const Navbar = () => {
                   className="flex items-center space-x-2 p-2 rounded-lg hover:bg-blue-50 transition-all duration-200 group"
                 >
                   <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center text-white font-semibold text-sm">
-                    {user?.name?.charAt(0).toUpperCase() || 'U'}
+                    JD
                   </div>
                   <FaChevronDown className={`h-4 w-4 text-gray-600 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
@@ -168,8 +165,8 @@ const Navbar = () => {
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                     <div className="px-4 py-3 border-b border-gray-200">
-                      <p className="text-sm font-semibold text-gray-900">{user?.name}</p>
-                      <p className="text-xs text-gray-500">{user?.email}</p>
+                      <p className="text-sm font-semibold text-gray-900">John Doe</p>
+                      <p className="text-xs text-gray-500">john@example.com</p>
                     </div>
                     <div className="py-1">
                       <NavLink
@@ -230,7 +227,7 @@ const Navbar = () => {
             ) : (
               <div className="flex items-center space-x-2">
                 <NavLink
-                  to={`/auth?redirect=${encodeURIComponent(location.pathname)}`}
+                  to="/auth"
                   className={({ isActive }) =>
                     `flex items-center space-x-1 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
                       isActive
@@ -324,7 +321,7 @@ const Navbar = () => {
               ) : (
                 <>
                   <NavLink
-                    to={`/auth?redirect=${encodeURIComponent(location.pathname)}`}
+                    to="/auth"
                     className={getMobileActiveLinkClasses}
                     onClick={() => setIsMenuOpen(false)}
                   >

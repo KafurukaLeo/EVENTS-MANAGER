@@ -6,6 +6,7 @@ import {
   FaSignOutAlt, FaChartBar, FaCalendarCheck
 } from 'react-icons/fa'
 import { IoCalendarOutline } from 'react-icons/io5'
+import useAuth from '../hooks/useAuth'
 
 const navItems = [
   { to: '/admin', label: 'Dashboard', icon: FaTachometerAlt, end: true },
@@ -29,6 +30,12 @@ const linkClass = ({ isActive }) =>
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const navigate = useNavigate()
+  const { user, logout } = useAuth()
+
+  const handleLogout = () => {
+    logout()
+    navigate('/auth', { replace: true })
+  }
 
   return (
     <div className="flex h-screen bg-gray-100 overflow-hidden">
@@ -65,11 +72,11 @@ export default function AdminLayout() {
 
         <div className="px-3 py-4 border-t border-white/10">
           <button
-            onClick={() => navigate('/')}
-            className="flex items-center gap-3 w-full px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
+            onClick={handleLogout}
+            className="flex items-center gap-3 w-full px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-red-500/20 hover:text-red-300 transition-colors"
           >
             <FaSignOutAlt className="h-4 w-4" />
-            Back to Site
+            Sign Out
           </button>
         </div>
       </aside>
@@ -85,9 +92,9 @@ export default function AdminLayout() {
           </button>
           <div className="flex items-center gap-2 ml-auto">
             <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center text-white text-sm font-bold">
-              A
+              {user?.name?.charAt(0).toUpperCase() || 'A'}
             </div>
-            <span className="text-sm font-medium text-gray-700 hidden sm:block">Admin</span>
+            <span className="text-sm font-medium text-gray-700 hidden sm:block">{user?.name || 'Admin'}</span>
           </div>
         </header>
 

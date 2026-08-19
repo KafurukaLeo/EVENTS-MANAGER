@@ -18,8 +18,10 @@ const LoginForm = ({ redirect = '/' }) => {
     setError('');
     setLoading(true);
     try {
-      await login(form.email, form.password);
-      navigate(redirect);
+      const user = await login(form.email, form.password);
+      if (user.role === 'admin') navigate('/admin', { replace: true });
+      else if (user.role === 'organizer') navigate('/venue', { replace: true });
+      else navigate(redirect, { replace: true });
     } catch (err) {
       setError(err.message);
     } finally {

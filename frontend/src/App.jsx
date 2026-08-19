@@ -33,6 +33,7 @@ import VenueRegistrations from './venue/VenueRegistrations'
 import VenuePayments from './venue/VenuePayments'
 import VenueCheckIn from './venue/VenueCheckIn'
 import Tickets from './pages/tickets/Tickets'
+import RoleRoute from './routes/RoleRoute'
 
 const App = () => {
   return (
@@ -63,32 +64,36 @@ const App = () => {
           <Route path="/events/:id" element={<EventDetail />} />
         </Route>
 
-        {/* Admin routes */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="events" element={<AdminEvents />} />
-          <Route path="users" element={<AdminUsers />} />
-          <Route path="registrations" element={<AdminRegistrations />} />
-          <Route path="payments" element={<AdminPayments />} />
-          <Route path="guests" element={<AdminGuests />} />
-          <Route path="tickets" element={<AdminTickets />} />
-          <Route path="invitations" element={<AdminInvitations />} />
-          <Route path="reports" element={<AdminReports />} />
+        {/* Admin routes — ADMIN only */}
+        <Route path="/admin" element={<RoleRoute roles={['admin']} />}>
+          <Route element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="events" element={<AdminEvents />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="registrations" element={<AdminRegistrations />} />
+            <Route path="payments" element={<AdminPayments />} />
+            <Route path="guests" element={<AdminGuests />} />
+            <Route path="tickets" element={<AdminTickets />} />
+            <Route path="invitations" element={<AdminInvitations />} />
+            <Route path="reports" element={<AdminReports />} />
+          </Route>
         </Route>
         
         {/* Auth routes without Layout */}
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/forgotPassword" element={<ForgotPassword />} />
 
-        {/* Venue Owner routes */}
-        <Route path="/venue" element={<VenueLayout />}>
-          <Route index element={<VenueOverview />} />
-          <Route path="events" element={<VenueEvents />} />
-          <Route path="guests" element={<VenueGuests />} />
-          <Route path="invitations" element={<VenueInvitations />} />
-          <Route path="registrations" element={<VenueRegistrations />} />
-          <Route path="payments" element={<VenuePayments />} />
-          <Route path="checkin" element={<VenueCheckIn />} />
+        {/* Venue Owner routes — ORGANIZER only */}
+        <Route path="/venue" element={<RoleRoute roles={['organizer']} />}>
+          <Route element={<VenueLayout />}>
+            <Route index element={<VenueOverview />} />
+            <Route path="events" element={<VenueEvents />} />
+            <Route path="guests" element={<VenueGuests />} />
+            <Route path="invitations" element={<VenueInvitations />} />
+            <Route path="registrations" element={<VenueRegistrations />} />
+            <Route path="payments" element={<VenuePayments />} />
+            <Route path="checkin" element={<VenueCheckIn />} />
+          </Route>
         </Route>
 
         {/* Catch-all route for 404 Not Found */}

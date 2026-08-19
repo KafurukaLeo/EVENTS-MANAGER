@@ -5,6 +5,7 @@ import {
   FaCalendarCheck, FaCreditCard, FaQrcode, FaBars, FaTimes, FaSignOutAlt
 } from 'react-icons/fa'
 import { IoCalendarOutline } from 'react-icons/io5'
+import useAuth from '../hooks/useAuth'
 
 const navItems = [
   { to: '/venue', label: 'Overview', icon: FaTachometerAlt, end: true },
@@ -24,6 +25,12 @@ const linkClass = ({ isActive }) =>
 export default function VenueLayout() {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
+  const { user, logout } = useAuth()
+
+  const handleLogout = () => {
+    logout()
+    navigate('/auth', { replace: true })
+  }
 
   return (
     <div className="flex h-screen bg-gray-100 overflow-hidden">
@@ -56,11 +63,11 @@ export default function VenueLayout() {
 
         <div className="px-3 py-4 border-t border-white/10">
           <button
-            onClick={() => navigate('/')}
-            className="flex items-center gap-3 w-full px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
+            onClick={handleLogout}
+            className="flex items-center gap-3 w-full px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-red-500/20 hover:text-red-300 transition-colors"
           >
             <FaSignOutAlt className="h-4 w-4" />
-            Back to Site
+            Sign Out
           </button>
         </div>
       </aside>
@@ -73,8 +80,10 @@ export default function VenueLayout() {
             <FaBars className="h-5 w-5" />
           </button>
           <div className="flex items-center gap-2 ml-auto">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-blue-500 flex items-center justify-center text-white text-sm font-bold">V</div>
-            <span className="text-sm font-medium text-gray-700 hidden sm:block">Venue Owner</span>
+            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-blue-500 flex items-center justify-center text-white text-sm font-bold">
+              {user?.name?.charAt(0).toUpperCase() || 'O'}
+            </div>
+            <span className="text-sm font-medium text-gray-700 hidden sm:block">{user?.name || 'Organizer'}</span>
           </div>
         </header>
 

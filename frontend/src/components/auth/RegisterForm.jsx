@@ -4,7 +4,7 @@ import { User, Mail, Lock, Eye, EyeOff, UserPlus } from 'lucide-react';
 import useAuth from '../../hooks/useAuth';
 
 const RegisterForm = ({ onSuccess }) => {
-  const { register } = useAuth();
+  const { register, login } = useAuth();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -27,13 +27,10 @@ const RegisterForm = ({ onSuccess }) => {
     }
     setLoading(true);
     try {
-      await register({ name: form.name, email: form.email, password: form.password, role: 'eventManager' });
-      alert('Registration successful! Please sign in.');
-      if (onSuccess) {
-        onSuccess();
-      } else {
-        navigate('/auth');
-      }
+      await register({ name: form.name, email: form.email, password: form.password, role: 'organizer' });
+      // Auto-login after register
+      await login(form.email, form.password);
+      navigate('/venue', { replace: true });
     } catch (err) {
       setError(err.message);
     } finally {
