@@ -1,4 +1,6 @@
 // frontend/src/components/auth/LoginForm.jsx
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   Mail, 
   Lock, 
@@ -6,11 +8,16 @@ import {
   EyeOff, 
   LogIn,
 } from 'lucide-react';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
 
-const LoginForm = () => {
+const LoginForm = ({ redirect = '/' }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // TODO: real auth logic here
+    navigate(redirect);
+  };
 
   return (
     <div className="space-y-6">
@@ -21,7 +28,7 @@ const LoginForm = () => {
         </p>
       </div>
 
-      <form className="space-y-5" noValidate>
+      <form className="space-y-5" noValidate onSubmit={handleSubmit}>
         {/* Email Field */}
         <div className="space-y-1">
           <label htmlFor="login-email" className="block text-sm font-medium text-gray-700">

@@ -168,7 +168,7 @@ export default function Tickets() {
     <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="md:flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
             <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2.5 rounded-xl">
               <FaTicketAlt className="h-5 w-5 text-white" />

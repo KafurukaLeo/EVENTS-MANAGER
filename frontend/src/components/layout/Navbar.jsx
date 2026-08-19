@@ -1,5 +1,5 @@
 // frontend/src/components/layout/Navbar.jsx
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import { 
   FaCalendarAlt,
@@ -28,6 +28,7 @@ const Navbar = () => {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
   const isAuthenticated = false // This would come from your auth context/state
   const navigate = useNavigate()
+  const location = useLocation()
 
   const handleLogout = () => {
     // Add logout logic here
@@ -37,7 +38,8 @@ const Navbar = () => {
   const navLinks = [
     { to: '/', label: 'Home', icon: FaHome },
     { to: '/events', label: 'Events', icon: FaCalendarAlt },
-    { to: '/book', label: 'Book Venue', icon: FaMapMarkerAlt }, // Added Book link
+    { to: '/book', label: 'Book Venue', icon: FaMapMarkerAlt },
+    { to: '/tickets', label: 'My Tickets', icon: FaTicketAlt },
     { to: '/about', label: 'About', icon: FaInfoCircle },
     { to: '/contact', label: 'Contact', icon: FaEnvelope },
   ]
@@ -227,7 +229,7 @@ const Navbar = () => {
             ) : (
               <div className="flex items-center space-x-2">
                 <NavLink
-                  to="/auth"
+                  to={`/auth?redirect=${encodeURIComponent(location.pathname)}`}
                   className={({ isActive }) =>
                     `flex items-center space-x-1 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
                       isActive
@@ -321,7 +323,7 @@ const Navbar = () => {
               ) : (
                 <>
                   <NavLink
-                    to="/auth"
+                    to={`/auth?redirect=${encodeURIComponent(location.pathname)}`}
                     className={getMobileActiveLinkClasses}
                     onClick={() => setIsMenuOpen(false)}
                   >

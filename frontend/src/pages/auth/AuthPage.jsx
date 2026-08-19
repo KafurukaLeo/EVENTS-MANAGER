@@ -1,11 +1,24 @@
 // frontend/src/pages/AuthPage.jsx
 import { useState } from 'react';
-import { Calendar, LogIn, UserPlus } from 'lucide-react';
+import { useSearchParams, useLocation } from 'react-router-dom';
+import { Calendar, ChevronLeft, LogIn, UserPlus } from 'lucide-react';
 import LoginForm from '../../components/auth/LoginForm';
 import RegisterForm from '../../components/auth/RegisterForm';
 
 const AuthPage = () => {
   const [activeTab, setActiveTab] = useState('login');
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  
+  // Get redirect from URL params or use current path
+  const redirect = searchParams.get('redirect') || location.pathname || '/';
+
+  // Handle redirect to current page
+  const handleRedirectToCurrent = () => {
+    // If we're already on the auth page, redirect to home
+    const targetPath = location.pathname === '/auth' ? '/' : location.pathname;
+    window.location.href = targetPath;
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -54,7 +67,18 @@ const AuthPage = () => {
 
           {/* Forms */}
           <div className="transition-all duration-300">
-            {activeTab === 'login' ? <LoginForm /> : <RegisterForm />}
+            {activeTab === 'login' ? <LoginForm redirect={redirect} /> : <RegisterForm />}
+          </div>
+
+          {/* Redirect Button */}
+          <div className="mt-4 pt-4 border-t border-gray-200">
+            <button
+              onClick={handleRedirectToCurrent}
+              className="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors duration-200"
+            >
+              <ChevronLeft className="h-4 w-4 mr-2" />
+              Back
+            </button>
           </div>
         </div>
 
