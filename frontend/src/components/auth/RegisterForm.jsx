@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { User, Mail, Lock, Eye, EyeOff, UserPlus } from 'lucide-react';
 import useAuth from '../../hooks/useAuth';
 
-const RegisterForm = () => {
+const RegisterForm = ({ onSuccess }) => {
   const { register } = useAuth();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -27,8 +27,13 @@ const RegisterForm = () => {
     }
     setLoading(true);
     try {
-      await register({ name: form.name, email: form.email, password: form.password, role: 'ORGANIZER' });
-      navigate('/auth');
+      await register({ name: form.name, email: form.email, password: form.password, role: 'eventManager' });
+      alert('Registration successful! Please sign in.');
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        navigate('/auth');
+      }
     } catch (err) {
       setError(err.message);
     } finally {

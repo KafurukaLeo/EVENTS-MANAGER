@@ -1,5 +1,7 @@
 import express from "express";
 import { getReportSummary } from "../controllers/report.controller.js";
+import authenticate from "../middlewares/authenticate.middleware.js";
+import authorize from "../middlewares/authorize.middleware.js";
 
 const router = express.Router();
 
@@ -13,7 +15,7 @@ const router = express.Router();
  *       200:
  *         description: Dashboard report statistics
  */
-router.get("/", getReportSummary);
+router.get("/", authenticate, authorize("admin", "eventmanager"), getReportSummary);
 
 /**
  * @swagger
@@ -25,6 +27,6 @@ router.get("/", getReportSummary);
  *       200:
  *         description: Dashboard report statistics
  */
-router.post("/", getReportSummary);
+router.post("/", authenticate, authorize("admin", "eventmanager"), getReportSummary);
 
 export default router;

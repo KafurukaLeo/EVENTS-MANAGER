@@ -8,7 +8,8 @@ import { jwtSecret, jwtExpiresIn } from "../config/jwt.js";
 
 export const register = async (req, res, next) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { names, name, email, password, role } = req.body;
+    
     const existingUser = await userModel.findByIdEmail(email);
     
     if (existingUser) {
@@ -21,10 +22,10 @@ export const register = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await userModel.create({
-      name,
+      name: names || name,
       email,
       password: hashedPassword,
-      role,
+      role: (role || 'guest').toLowerCase(),
     });
 
     res.status(201).json({

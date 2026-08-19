@@ -5,15 +5,64 @@ import {
   createPayment,
   getPayments,
   uploadPaymentProof,
+  handleWebhook,
+  mockCheckoutPage,
 } from "../controllers/payment.controller.js";
-
-import authenticate from "../middlewares/authenticate.middleware.js";
 
 const router = express.Router();
 
 const upload = multer({
   dest: "uploads/payment-proofs",
 });
+
+/**
+ * @swagger
+ * /api/payments/checkout:
+ *   get:
+ *     summary: Mock payment gateway checkout landing page
+ *     tags: [Payments]
+ *     parameters:
+ *       - in: query
+ *         name: reference
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: amount
+ *         required: true
+ *         schema:
+ *           type: number
+ *     responses:
+ *       200:
+ *         description: Checkout HTML rendered
+ */
+router.get("/checkout", mockCheckoutPage);
+
+/**
+ * @swagger
+ * /api/payments/webhook:
+ *   post:
+ *     summary: Payment gateway webhook callback
+ *     tags: [Payments]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - reference
+ *               - status
+ *             properties:
+ *               reference:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Webhook received and processed
+ */
+router.post("/webhook", handleWebhook);
 
 /**
  * @swagger
@@ -96,4 +145,5 @@ router.post(
   upload.single("proof"),
   uploadPaymentProof,
 );
+
 export default router;

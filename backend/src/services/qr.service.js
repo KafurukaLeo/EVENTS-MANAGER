@@ -41,13 +41,10 @@ const qrService = {
       throw error;
     }
 
-    // Data encoded inside the QR Code
     const qrData = JSON.stringify({
       ticketId: ticketRow.ticket_id,
       ticketNumber: ticketRow.ticket_number,
-      eventName: ticketRow.event_name,
-      paymentStatus: ticketRow.payment_status || 'Unpaid',
-      isPaid: isPaid
+      eventName: ticketRow.event_name
     });
 
     const qrCode = await generateQRCode(qrData);

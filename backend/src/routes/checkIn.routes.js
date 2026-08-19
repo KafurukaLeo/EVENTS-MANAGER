@@ -32,6 +32,8 @@ const router = express.Router();
  */
 router.post(
   "/",
+  authenticate,
+  authorize("admin", "eventmanager"),
   checkIn,
 );
 
@@ -47,6 +49,6 @@ router.post(
  *       200:
  *         description: List of check-ins
  */
-router.get("/", getCheckIns);
+router.get("/", authenticate, authorize("admin", "eventmanager"), getCheckIns);
 
 export default router;

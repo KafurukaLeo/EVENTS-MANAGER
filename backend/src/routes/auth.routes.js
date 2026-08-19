@@ -24,18 +24,15 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             required:
- *               - name
+ *               - names
  *               - email
  *               - password
- *               - role
  *             properties:
- *               name:
+ *               names:
  *                 type: string
  *               email:
  *                 type: string
  *               password:
- *                 type: string
- *               role:
  *                 type: string
  *     responses:
  *       201:
@@ -74,18 +71,6 @@ router.post("/register", registerValidator, validate, register);
  */
 router.post("/login", loginValidator, validate, login);
 
-/**
- * @swagger
- * /api/auth/me:
- *   post:
- *     summary: Get current authenticated
- *     tags: [Auth]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Current user details
- */
 router.post("/me", authenticate, getMe);
 
 export default router;
